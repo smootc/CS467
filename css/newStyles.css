@@ -1,0 +1,46 @@
+.summary_boxes {
+  width: 100%;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.table_content {
+  text-align: center;
+  color: white;
+  width: auto;
+  position: relative;
+}
+
+.summaries {
+    border: 3px solid white;
+    width: auto;
+    position: relative;
+}
+
+.greeting {
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+    margin-top: auto;
+    position: relative;
+    min-height: 90px;
+}
+
+.table_header {
+  text-decoration: underline;
+}
+
+.table_caption {
+    display: inline-block;
+    align: center;
+}
+
+.center-text {
+  align: center;
+}
+
+.health_link {
+    align: right;
+    width: 100%;
+}
+
