@@ -14,7 +14,7 @@
 		<!-- meta character set -->
 		<meta charset="UTF-8">
 		<!-- Site Title -->
-		<title>Car Rentals</title>
+		<title>Exercise Tracker</title>
 
 		<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
 			<!--
@@ -35,19 +35,14 @@
 			    <div class="container">
 			    	<div class="row align-items-center justify-content-between d-flex">
 				      <div id="logo">
-				        <a href="index.html"><img src="img/logo.png" alt="" title="" /></a>
+					      <a href="{{url_for('main')}}"><img src="img/logo.png" alt="" title="" /></a>
 				      </div>
 				      <nav id="nav-menu-container">
 				        <ul class="nav-menu">
-				          <li class="menu-active"><a href="index.html">Home</a></li>
-				          <li><a href="health.html">Health</a></li>
-				          <li><a href="goals.html">Goals</a></li>
-				          <li class="menu-has-children"><a href="">Pages</a>
-				            <ul>
-				              <li><a href="blog-single.html">Blog Single</a></li>
-				              <li><a href="elements.html">Elements</a></li>
-				            </ul>
-				          </li>			          
+					  <li class="menu-active"><a href="{{url_for('main')}}">Home</a></li>
+					  <li><a href="{{url_for('health')}}">Health</a></li>
+					  <li><a href="{{url_for('goals')}}">Goals</a></li>
+				          
 				        </ul>
 				      </nav><!-- #nav-menu-container -->		    		
 			    	</div>
@@ -77,22 +72,28 @@
 							<h1>Recent Activities:</h1>
                     </div>
 					</div>
-					<table align="center">
-						<thead class="table_header">
-							<tr>
-								<th>Type</th>
-								<th>Distance</th>
-								<th>Time</th>
-							</tr>
+					
+					<table align="center" class="log_display" action="{{ url_for('activities') }}">
+						<thead style="text-align: center" class="table_header">
+						<tr>
+							<th>Type</th>
+							<th>Distance</th>
+							<th>Time</th>
+							<th>For Goal</th>
+						</tr>
 						</thead>
 						<tbody>
+						{% for activity in user_activities %}
 						<tr>
-							<td>{{user_id.id.activity_type}}</td>
-							<td>{{user_id.id.distance}}</td>
-							<td>{{user_id.id.duration}}</td>
+							<td style="min-width: 70px">{{ activity.activity_type }}</td>
+							<td style="min-width: 70px" align="center">{{ activity.distance }}</td>
+							<td style="min-width: 100px; text-align:center">{{ activity.duration }}</td>
+							<td style="min-width: 200px">{{ activity.notes }}</td>
 						</tr>
+						{% endfor %}
 						</tbody>
 					</table>
+					
 				</div>	
 			</section>
 			<!-- End feature Area -->				
@@ -100,97 +101,31 @@
 			<!-- Start fact Area -->
 			<section class="facts-area section-gap" id="facts-area">
 				<div align="center" class="container">
-					<form action="">
+					<form action="{{ url_for('activities') }}" method="POST">
 						<h2>Add Activity</h2>
-						Type: <select name="activity_type">
-								<option value="Run">Run</option>
-								<option value="Swim">Swim</option>
-								<option value="Bike">Bike</option>
-							</select>
-						Distance:
-							<input type="number" name="new_dist" />
+						Type <select name="newType" value="{{request.form.newType}}">
+							<option>Running</option>
+							<option>Swimming</option>
+							<option>Biking</option>
+						</select>
+						Distance
+						<input type="number" name="newDist" value="{{request.form.newDist}}"/>
 						Duration
-							<input type="number" name="new_dur" />
+						<input type="text" name="newDur" value="{{request.form.newDur}}"/>
+						For Goal <select name="forGoal" value="{{request.form.forGoal}}">
+							{% for goal in user_goals %}
+							<option>{{ goal.notes }}</option>
+							{% endfor %}
+
 						<input type="submit" value="Submit">
 					</form>
 				</div>	
 			</section>
-			<!-- end fact Area -->							
 
-			<!-- Start reviews Area -->
-			<section class="reviews-area section-gap" id="review">
-				<div class="container">
-
-				</div>	
-			</section>
-			<!-- End reviews Area -->
-
-			<!-- start footer Area -->		
-			<footer class="footer-area section-gap">
+			<!-- start footer Area -->
+			<footer style="padding-top: 0px; padding-bottom: 0px" class="footer-area section-gap">
 				<div class="container">
 					<div class="row">
-						<div class="col-lg-2 col-md-6 col-sm-6">
-							<div class="single-footer-widget">
-								<h6>Quick links</h6>
-								<ul>
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Brand Assets</a></li>
-									<li><a href="#">Investor Relations</a></li>
-									<li><a href="#">Terms of Service</a></li>
-								</ul>								
-							</div>
-						</div>
-						<div class="col-lg-2 col-md-6 col-sm-6">
-							<div class="single-footer-widget">
-								<h6>Features</h6>
-								<ul>
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Brand Assets</a></li>
-									<li><a href="#">Investor Relations</a></li>
-									<li><a href="#">Terms of Service</a></li>
-								</ul>								
-							</div>
-						</div>
-						<div class="col-lg-2 col-md-6 col-sm-6">
-							<div class="single-footer-widget">
-								<h6>Resources</h6>
-								<ul>
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Brand Assets</a></li>
-									<li><a href="#">Investor Relations</a></li>
-									<li><a href="#">Terms of Service</a></li>
-								</ul>								
-							</div>
-						</div>												
-						<div class="col-lg-2 col-md-6 col-sm-6 social-widget">
-							<div class="single-footer-widget">
-								<h6>Follow Us</h6>
-								<p>Let us be social</p>
-								<div class="footer-social d-flex align-items-center">
-									<a href="#"><i class="fa fa-facebook"></i></a>
-									<a href="#"><i class="fa fa-twitter"></i></a>
-									<a href="#"><i class="fa fa-dribbble"></i></a>
-									<a href="#"><i class="fa fa-behance"></i></a>
-								</div>
-							</div>
-						</div>							
-						<div class="col-lg-4  col-md-6 col-sm-6">
-							<div class="single-footer-widget">
-								<h6>Newsletter</h6>
-								<p>Stay update with our latest</p>
-								<div class="" id="mc_embed_signup">
-									<form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
-										<input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
-			                            	<button class="click-btn btn btn-default"><span class="lnr lnr-arrow-right"></span></button>
-			                            	<div style="position: absolute; left: -5000px;">
-												<input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
-											</div>
-
-										<div class="info"></div>
-									</form>
-								</div>
-							</div>
-						</div>	
 						<p class="mt-50 mx-auto footer-text col-lg-12">
 							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
