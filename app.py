@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, url_for, redirect
-import json
 import requests
 import records
 import dbconfig
@@ -92,6 +91,17 @@ def deleteActivities():
         return redirect(url_for('deleteActivities'))
 
     return render_template('deleteActivities.html', user_activities=user_activities)
-    
+
+@app.route('/deletedGoals', methods=['POST'])
+def deleteGoals():
+    user_goals = db.query('SELECT * FROM goals WHERE user_id = :currUser', currUser=currUser)
+
+    if request.method == 'POST':
+        delID = request.POST['goal.id']
+        db.query('DELETE FROM goals WHERE delID = id', delID=delID)
+        return redirect(url_for('deleteGoals'))
+
+    return render_template('deleteGoals.html', user_goals=user_goals)
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port='5432', debug=True)
