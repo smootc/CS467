@@ -49,78 +49,41 @@
 			    </div>
 			  </header><!-- #header -->
 
-			<!-- start banner Area -->
-			<section class="banner-area relative" id="home">
-				<div class="overlay overlay-bg"></div>
-				<div class="container">
-					<div class="row d-flex align-items-center justify-content-center">
-						<div class="about-content col-lg-12">
-							<h1 class="text-white">
-								Activities Log
-							</h1>
-						</div>											
-					</div>
-				</div>
-			</section>
-			<!-- End banner Area -->	
-
 			<!-- Start feature Area -->
 			<section class="feature-area section-gap" id="service">
 				<div class="container">
 					<div class="row d-flex justify-content-center">
 						<div class="center-text">
-							<h1>Recent Activities:</h1>
-                    </div>
+							<h1>Remove an Activities</h1>
+							<form action="{{ url_for('delactivities') }}" method="POST">
+							<table align="center" action="{{ url_for('delactivities') }}" class="log_display">
+								<thead style="text-align: center" class="table-header">
+									<tr>
+										<th>Type</th>
+										<th>Distance</th>
+										<th>Time</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for activity in user_activities %}
+									<tr>
+										<td style="min-width: 70px">{{ activity.activity_type }}</td>
+										<td style="min-width: 70px" align="center">{{ activity.activity_distance }}</td>
+										<td style="min-width: 100px" align="center">{{ activity.activity_duration }}</td>
+										<td><button type="submit" name="activity_id" value="{{ activity.activity_id }}">Delete</button></td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+							</form>
+							<a href="{{ url_for('activities') }}">Return to Activities</a>
+                				    </div>
 					</div>
 					
-					<table align="center" class="log_display" action="{{ url_for('activities') }}">
-						<thead style="text-align: center" class="table_header">
-						<tr>
-							<th>Type</th>
-							<th>Distance</th>
-							<th>Time</th>
-							<th>For Goal</th>
-						</tr>
-						</thead>
-						<tbody>
-						{% for activity in user_activities %}
-						<tr>
-							<td style="min-width: 70px">{{ activity.activity_type }}</td>
-							<td style="min-width: 70px" align="center">{{ activity.distance }}</td>
-							<td style="min-width: 100px; text-align:center">{{ activity.duration }}</td>
-							<td style="min-width: 200px">{{ activity.notes }}</td>
-						</tr>
-						{% endfor %}
-						</tbody>
-					</table>
-					<a href="{{url_for('deleteActivities')}}">Remove an activity</a>
 				</div>	
 			</section>
 			<!-- End feature Area -->				
-
-			<!-- Start fact Area -->
-			<section class="facts-area section-gap" id="facts-area">
-				<div align="center" class="container">
-					<form action="{{ url_for('activities') }}" method="POST">
-						<h2>Add Activity</h2>
-						Type <select name="newType" value="{{request.form.newType}}">
-							<option>Running</option>
-							<option>Swimming</option>
-							<option>Biking</option>
-						</select>
-						Distance
-						<input type="number" name="newDist" value="{{request.form.newDist}}"/>
-						Duration
-						<input type="text" name="newDur" value="{{request.form.newDur}}"/>
-						For Goal <select name="forGoal" value="{{request.form.forGoal}}">
-							{% for goal in user_goals %}
-							<option>{{ goal.notes }}</option>
-							{% endfor %}
-
-						<input type="submit" value="Submit">
-					</form>
-				</div>	
-			</section>
 
 			<!-- start footer Area -->
 			<footer style="padding-top: 0px; padding-bottom: 0px" class="footer-area section-gap">

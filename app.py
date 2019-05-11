@@ -82,6 +82,16 @@ def goals():
     
     return render_template('goals.html', user_goals=user_goals)
 
-        
+@app.route('/deleteActivities', methods=['POST'])
+def deleteActivities():
+    user_activities = db.query('SELECT activities.activity_type, activities.distance, activities.duration FROM activities WHERE activities.user_id = :currUser', currUser=currUser)
+
+    if request.method == 'POST':
+        delID = request.POST['activity.activity_id']
+        db.query('DELETE FROM activities WHERE delID = id', delID=delID)
+        return redirect(url_for('deleteActivities'))
+
+    return render_template('deleteActivities.html', user_activities=user_activities)
+    
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port='5432', debug=True)

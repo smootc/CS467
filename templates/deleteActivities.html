@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Exercise Tracker</title>
+<link rel="stylesheets" href="{{ url_for('static', filename='css/newStyles.css')}}"
+</head>
+<body>
+	<form action="{{ url_for('deleteActivities') }}" method="POST">
+		<table align="center" action="{{ url_for('deleteActivities') }}" class="log_display">
+			<thead style="text-align: center" class="table-header">
+				<tr>
+					<th>Type</th>
+					<th>Distance</th>
+					<th>Time</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for activity in user_activities %}
+				<tr>
+					<td style="min-width: 70px">{{ activity.activity_type }}</td>
+					<td style="min-width: 70px" align="center">{{ activity.activity_distance }}</td>
+					<td style="min-width: 100px" align="center">{{ activity.activity_duration }}</td>
+					<td><button type="submit" name="activity_id" value="{{ activity.activity_id }}">Delete</button></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</form>
+	<a href="{{ url_for('activities') }}">Return to Activities</a>
+</body>
+</html>
