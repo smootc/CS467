@@ -69,31 +69,47 @@
 				<div class="container">
 					<div class="row d-flex justify-content-center">
 						<div class="center-text">
-							<h1>Recent Activities:</h1>
+							<h1>Recent Activities</h1>
                     </div>
 					</div>
-					
-					<table align="center" class="log_display" action="{{ url_for('activities') }}">
-						<thead style="text-align: center" class="table_header">
-						<tr>
-							<th>Type</th>
-							<th>Distance</th>
-							<th>Time</th>
-							<th>For Goal</th>
-						</tr>
-						</thead>
-						<tbody>
-						{% for activity in user_activities %}
-						<tr>
-							<td style="min-width: 70px">{{ activity.activity_type }}</td>
-							<td style="min-width: 70px" align="center">{{ activity.distance }}</td>
-							<td style="min-width: 100px; text-align:center">{{ activity.duration }}</td>
-							<td style="min-width: 200px">{{ activity.notes }}</td>
+
+                                        <table align="center" class="log_display" action="{{ url_for('activities') }}">
+                                                <thead style="text-align: center" class="table_header">
+                                                <tr>
+                                                        <th>Type</th>
+                                                        <th>Distance</th>
+                                                        <th>Time</th>
+                                                        <th>For Goal</th>
+                                                        <th></th>
+                                                </tr>
+                                                </thead>
+		
+                                                <tbody>
+						{% if user_activities == "None" %}
+							<td colspan="4">no activities have been entered</td>
+							<td></td>
+						
+						{% else %}
+                                                {% for activity in user_activities %}
+                                                <tr>
+                                                        <td style="min-width: 70px">{{ activity.activity_type }}</td>
+                                                        <td style="min-width: 70px" align="center">{{ activity.distance }}</td>
+                                                        <td style="min-width: 100px; text-align:center">{{ activity.duration }}</td>
+                                                        <td style="min-width: 200px">{{ activity.notes }}</td>
+                                                        
+							<td>
+							
+                                                	<form action="{{ url_for('deleteActivities', aid = activity.id) }}" method="POST">
+                                                       
+								<input type="submit" value="Delete"/>
+							</form>
+							</td>
 						</tr>
 						{% endfor %}
+						{% endif %}
 						</tbody>
+						</form>
 					</table>
-					<a href="{{url_for('deleteActivities')}}">Remove an activity</a>
 				</div>	
 			</section>
 			<!-- End feature Area -->				
