@@ -86,7 +86,7 @@
 		
                                                 <tbody>
 						{% if user_activities == "None" %}
-							<td colspan="4">no activities have been entered</td>
+							<td colspan="4"><i>no activities have been entered</i></td>
 							<td></td>
 						
 						{% else %}
@@ -99,9 +99,8 @@
                                                         
 							<td>
 							
-                                                	<form action="{{ url_for('deleteActivities', aid = activity.id) }}" method="POST">
-                                                       
-								<input type="submit" value="Delete"/>
+                                                	<form action="{{ url_for('delete_activity', aid=activity.id) }}" method="POST">
+                                                       		<input type="submit" value="Delete"></input>
 							</form>
 							</td>
 						</tr>
@@ -119,22 +118,28 @@
 				<div align="center" class="container">
 					<form action="{{ url_for('activities') }}" method="POST">
 						<h2>Add Activity</h2>
-						Type <select name="newType" value="{{request.form.newType}}">
+						<table>
+						<tbody><tr>
+						<td>Type</td> <td><select name="newType" value="{{request.form.newType}}">
 							<option>Running</option>
 							<option>Swimming</option>
 							<option>Biking</option>
-						</select>
-						Distance
-						<input type="number" name="newDist" value="{{request.form.newDist}}"/>
-						Duration
-						<input type="text" name="newDur" value="{{request.form.newDur}}"/>
-						For Goal <select name="forGoal" value="{{request.form.forGoal}}">
+						</select></td>
+						</tr>
+						<tr><td>Distance</td>
+						<td><input type="number" name="newDist" value="{{request.form.newDist}}"/></td></tr>
+						<tr><td>Duration</td>
+						<td><input type="text" name="newDur" value="{{request.form.newDur}}"/></td></tr>
+						<tr><td>For Goal</td> <td><select name="forGoal" value="{{request.form.forGoal}}">
 							{% for goal in user_goals %}
 							<option>{{ goal.notes }}</option>
 							{% endfor %}
-
-						<input type="submit" value="Submit">
+						</td></tr>
+						<tr><td></td><td align="right"><input type="submit" value="Submit"></input></td></tr>
+						</tbody>
+						</table>
 					</form>
+					<p align="right">*be sure that you have included a goal before adding activity</p>
 				</div>	
 			</section>
 

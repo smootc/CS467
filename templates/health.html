@@ -71,7 +71,7 @@
 							<h1>Current Health Info</h1>
                     </div>
 					</div>
-					<table align="center">
+					<table align="center" class="log_display" action="{{ url_for('health') }}">
 						<thead class="table_header">
 						<tr>
 							<th>Height</th>
@@ -81,9 +81,15 @@
 						</thead>
 						<tbody>
 						<tr>
-							<td>{{ height }} in</td>
-							<td>{{ weight }} lbs</td>
-							<td>{{ bmi }}</td>
+						{% if health == "None" %}
+							<td colspan="3">no health info has been provided</td>
+						{% else %}
+						{% for data in health %}
+							<td>{{ data.height }} in</td>
+							<td>{{ data.weight }} lbs</td>
+							<td>{{ data.bmi }}</td>
+						{% endfor %}
+						{% endif %}
 						</tr>
 						
                        				 <tr>
@@ -114,15 +120,7 @@
 					</form>
 				</div>	
 			</section>
-			<!-- end fact Area -->							
-
-			<!-- Start reviews Area -->
-			<section class="reviews-area section-gap" id="review">
-				<div class="container">
-
-				</div>	
-			</section>
-			<!-- End reviews Area -->
+			<!-- end fact Area -->						
 
 			<!-- start footer Area -->		
 			<footer style="padding-top: 0px; padding-bottom: 0px" class="footer-area section-gap">

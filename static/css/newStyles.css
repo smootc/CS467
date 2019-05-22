@@ -48,3 +48,8 @@
 #footer {
 	height: 30px;
 }
+
+.goal_table {
+	border-collapse: separate;
+	border-spacing: 15px;
+}

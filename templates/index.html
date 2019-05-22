@@ -68,12 +68,13 @@
                             </h3>
                             <table class="summaries" align="center">		
 				<tr>
-					{% if bmi != None %}
-					<td>Your BMI</td>
-					<td>{{ bmi }}</td>
-					{% endif %}
-					{% if bmi == None %}
+					{% if health == "None" %}
 					<td>no health info have been provided</td>
+					<td>Your BMI</td>
+					{% else %}
+					{% for bmi in health %}
+					<td>Your BMI:  {{ bmi }}</td>
+					{% endfor %}
 					{% endif %}
 				</tr>
 			     </table>
@@ -86,22 +87,16 @@
 				</h3>
 				<table class="summaries" align="center">
 				<tbody>
-					{% if goals != None %}
+					{% if goals == "None" %}
+					<tr>
+						<td>no goals have been entered</td>
+					</tr>
+					{% else %}
 					{% for goal in goals %}
 					<tr>
-						<!--<td>Description</td>-->
 						<td>{{ goal }}</td>
 					</tr>
 					{% endfor %}
-					{% endif %}
-					{% if goals == None %}
-					<tr>
-						<td>no goals have been entered</td>
-					<!--<tr>
-						<td>Time Spent:</td>
-						<td>{{sum_activities}}</td>
-					</tr>-->
-					</tr>
 					{% endif %}
 				</tbody>
 				</table>
@@ -114,16 +109,15 @@
 				</h3>
 				<table class="summaries" align="center">
 				<tbody>
+					{% if activities == "None" %}
+						
+						<tr><td colspan="3">no activities have been entered</td></tr>
+					{% else %}
 					<tr>
 						<th>Type</th>
 						<th>Distance</th>
 						<th>Duration</th>
-					</tr>
-					{% if activities == "None" %}
-					<tr>
-						<td colspan="3">no activities have been entered</td>
-					</tr>
-					<!--(% else %}-->
+					</tr>			
 					{% for actv in activities %}
 					<tr>
 						<td>{{ actv.activity_type }}</td>

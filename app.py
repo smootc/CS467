@@ -14,55 +14,71 @@ currUser = 12
 @app.route('/', methods=['GET'])
 def main():
     #updated to sort then select first row
-    users_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
-    if users_health:
-	for i in users_health:
-            bmi = i.bmi
-    else:
-        bmi = None
+    user_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
+
+    health = []
+    for i in user_health:
+        health.append(i.bmi)
+
+    if (len(health) < 1):
+	health = "None"
+
     user_goals = db.query('SELECT * FROM goals WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 5 ROws ONLY', currUser=currUser)
-    if user_goals:
-        goals=[]
-        for i in user_goals:
-            goals.append(i.notes)
-    else:
-        goals = None
+
+    goals=[]
+    for i in user_goals:
+        goals.append(i.notes)
+
+    if (len(goals) < 1):
+        goals = "None"
+
     user_activities = db.query('SELECT * FROM activities WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 5 ROWS ONLY', currUser=currUser)
-    numRows = user_activities.all()
-    if not user_activities:
-	activities = "None"
-    else:
-    	actiivities=[]
-    	for i in user_activities:
-        	activities.append(i)
-                
-    return render_template("index.html", bmi = bmi, goals = goals, activities=activities)
+    
+    activities = []
+    for i in user_activities:
+        activities.append(i)
+
+    if (len(activities) < 1):
+        activities = "None"
+ 
+    return render_template("index.html", health=health, goals = goals, activities=activities)
 
 @app.route('/health', methods=['GET', 'POST'])
 def health():
-    users_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
-    for i in users_health:
-        bmzyi = i.bmi
-        weight = i.weight
-        height = i.height
-            
+    user_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
+    
+    health = []
+    for i in user_health:
+        health.append(i)
+
+    if (len(health) < 1):
+        health = "None"
+ 
     if request.method == 'POST':
         newWeight = request.form['newWeight']
         newHeight = request.form['newHeight']
-        newWeight = int(newWeight, 10)
-        newHeight = int(newHeight, 10)
-        newBmi = ((newWeight/newHeight)/newHeight)*703
-        newBmi = round(newBmi)
-        db.query('INSERT INTO health (user_id, height, weight, bmi) VALUES(:currUser, :newHeight, :newWeight, :newBmi', newHeight=newHeight, newWeight=newWeight, newBmi=newBmi, currUser=currUser)
+        newWeight = float(newWeight)
+        newHeight = float(newHeight)
+        newBmi = ((newWeight/newHeight)/newHeight) * 703
+	newBmi = round(newBmi,0)
+	newBmi = int(newBmi)
+        newHeight = int(newHeight)
+	newWeight = int(newWeight)
+        db.query('INSERT INTO health (user_id, height, weight, bmi) VALUES(:currUser, :newHeight, :newWeight, :newBmi)', newHeight=newHeight, newWeight=newWeight, newBmi=newBmi, currUser=currUser)
         return redirect(url_for('health'))
 
-    return render_template('health.html', bmi=bmi, weight=weight, height=height)
+    return render_template('health.html', health=health)
 
 @app.route('/activities', methods=['GET', 'POST'])
 def activities():
     user_activities = db.query('SELECT activities.id, activities.activity_type, activities.distance, activities.duration, goals.notes FROM activities INNER JOIN goals ON activities.goal_id=goals.id WHERE activities.user_id = :currUser ORDER BY activities.time_created DESC FETCH FIRST 5 ROWS ONLY', currUser=currUser)
     user_goals = db.query('SELECT * FROM goals WHERE goals.user_id = :currUser', currUser=currUser)
-    if not user_activities:
+    
+    activities=[]
+    for i in user_activities:
+        activities.append(i)
+
+    if (len(activities)) < 1:
 	user_activities = "None"
 
     if request.method == 'POST':
@@ -78,15 +94,23 @@ def activities():
 
     return render_template('activities.html', user_activities=user_activities, user_goals=user_goals)
 
-@app.route('/deleteActivities', methods=['POST'])
-def deleteActivities(aid):
-    db.query('DELETE FROM activities WHERE id = ?', [aid])
-    return redirect(url_for('activities'))
 
+@app.route('/deleteActivity/<aid>', methods=['POST', 'DELETE'])
+def delete_activity(aid):
+    if request.method == 'POST':
+        db.query('DELETE FROM activities WHERE id = :aid', aid=aid)
+        return redirect(url_for('activities'))
 
 @app.route('/goals', methods=['GET', 'POST'])
 def goals():
     user_goals = db.query('SELECT * FROM goals WHERE user_id = :currUser ORDER BY time_created DESC FETCH FIRST 5 ROW ONLY', currUser=currUser)
+    
+    goals=[]
+    for i in user_goals:
+        goals.append(i)
+
+    if (len(goals)) < 1:
+	user_goals = "None"
 
     if request.method == 'POST':
         newNote = request.form['newNote']
@@ -99,17 +123,11 @@ def goals():
     return render_template('goals.html', user_goals=user_goals)
 
 
-@app.route('/deletedGoals', methods=['POST'])
-def deleteGoals():
-    user_goals = db.query('SELECT * FROM goals WHERE user_id = :currUser', currUser=currUser)
-
+@app.route('/deleteGoal/<gid>', methods=['POST'])
+def delete_goal(gid):
     if request.method == 'POST':
-        delID = request.POST['goal.id']
-        db.query('DELETE FROM goals WHERE delID = id', delID=delID)
-        return redirect(url_for('deleteGoals'))
-
-    return render_template('deleteGoals.html', user_goals=user_goals)
-
+	db.query('DELETE FROM goals WHERE id = :gid', gid=gid)
+	return redirect(url_for('goals'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='13667', debug=True)

@@ -27,7 +27,7 @@
 			<link rel="stylesheet" href="css/magnific-popup.css">
 			<link rel="stylesheet" href="css/bootstrap.css">
 			<link rel="stylesheet" href="css/main.css">
-			<link rel="stylesheet" href="css/newStyles.css">
+			<link rel="stylesheet" href="{{ url_for('static', filename='css/newStyles.css') }}">
 		</head>
 		<body>
 
@@ -68,31 +68,30 @@
 				<div class="container">
 					<div class="row d-flex justify-content-center">
 						<div class="center-text">
-							<h1>Your Current Goals</h1><br>
+							<h1>Recently Added Goals</h1><br>
                     				</div>
 					</div>
-					<table align="center">
-						<thead class="table_header">
-						<tr>
-							<th>Description</th>
-							<th>Type of Goal</th>
-							<th>Distance</th>
-							<th>Time</th>
-						</tr>
-						</thead>
+					<table class="goal_table" align="center">
+						
 						<tbody>
+						{% if user_goals == "None" %}
+						<tr><td colspan="4"><i>no goals have been submitted</i></tr></td>
+						{% else %}
 						{% for goal in user_goals %}
 						<tr>
-							<td>{{ goal.notes }}</td>
-							<td>{{ goal.activity_type }}</td>
-							<td>{{ goal.distance }}</td>
-							<td>{{ goal.duration }}</td>
+							<td align="center">{{ goal.notes }}</td>
+							<td>
+							<form action="{{ url_for('delete_goal', gid=goal.id) }}" method="POST">
+								<input type="submit" value="Delete"></input>
+							</form>
+							<td>
+
 						</tr>
 						{% endfor %}
+						{% endif %}
 						</tbody>
 					</table>
-					<a href="{{url_for('deleteGoals')}}">Remove a Goal</a>
-				</div>	
+				</div>
 			</section>
 			<!-- End feature Area -->				
 
@@ -102,29 +101,17 @@
 					<form action="{{ url_for('goals') }}" method="POST">
 						<h2>Add a Goal</h2>
 						<table>
-							<tbody>
-								<tr>
-								<td><label>Description
-										<input type="text" name="newNote" value="{{request.form.newNote}}">
-								</label></td>
-								<td><label>Type<select name="newType" value="{{request.form.newType}}">
+						<tbody>
+							<tr><td>Description</td> <td><input type="text" name="newNote" value="{{request.form.newNote}}"></td></tr>
+							<tr><td>Type</td> <td><select name="newType" value="{{request.form.newType}}">
 									<option value="Running">Running</option>
 									<option value="Swimming">Swimming</option>
 									<option value="Biking">Biking</option>
-								</select>
-								</label></td>
-								<td><label>Distance
-										<input type="number" name="newDist" value="{{request.form.newDist}}"/>
-								</label></td>
-								<td><label>Duration
-										<input type="text" name="newDur" value="{{request.form.newDur}}"/>
-								</label></td>
-								<td><label>
-								<input type="submit" value="Submit">
-								</label>
-								</td>
-								</tr>
-							</tbody>
+								</select></td></tr>
+							<tr><td>Distance</td> <td><input type="number" name="newDist" value="{{request.form.newDist}}"/></td></tr>
+							<tr><td>Duration</td> <td><input type="text" name="newDur" value="{{request.form.newDur}}"/></td></tr>
+							<tr><td></td><td align="right"><input type="submit" value="Submit"></td></tr>
+						</tbody>
 						</table>
 					</form>
 				</div>	
