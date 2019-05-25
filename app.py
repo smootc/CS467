@@ -11,8 +11,18 @@ db = records.Database('postgresql://{user}:{pw}@{url}/{dbName}'.format(user=dbco
 #how do we plan on passing this from login?
 currUser = 12
 
+#----------------------------------------------------------------------
+#User page homescreen
+#----------------------------------------------------------------------
 @app.route('/', methods=['GET'])
 def main():
+    #query to get the username for greeting
+    username = db.query('SELECT * FROM user_data WHERE id=:currUser', currUser=currUser)    
+
+    #my current work around for getting values to html 
+    for i in username:
+        name = str(i.user_name)
+ 
     #updated to sort then select first row
     user_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
 
@@ -41,7 +51,7 @@ def main():
     if (len(activities) < 1):
         activities = "None"
  
-    return render_template("index.html", health=health, goals = goals, activities=activities)
+    return render_template("index.html", health=health, goals = goals, activities=activities, name=name)
 
 @app.route('/health', methods=['GET', 'POST'])
 def health():

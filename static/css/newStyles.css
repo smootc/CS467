@@ -1,7 +1,7 @@
 .summary_boxes {
-  width: 100%;
-  margin-top: 5px;
-  padding-top: 5px;
+    width: 100%;
+    margin-top: 5px;
+    padding-top: 5px;
 }
 
 .table_content {
@@ -52,4 +52,8 @@
 .goal_table {
 	border-collapse: separate;
 	border-spacing: 15px;
+}
+
+.greet_user {
+    font-size: 30px;
 }
