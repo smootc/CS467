@@ -5,4 +5,4 @@ import records
 #establish connection with database
 #---------------------------------------------------
 def connectDB():
-    return records.Database('postgresql://{user}:{pw}@{url}/{dbName}'.format(user=dbconfig.POSTGRES_USER, pw=dbconfig.POSTGRES_PW, url=dbconfig.POSTGRES_URL, dbName=dbconfig.POSTGRES_DB))
+    return records.Database('postgresql://{user}:{pw}@{url}/{dbName}'.format(user=config.POSTGRES_USER, pw=config.POSTGRES_PW, url=config.POSTGRES_URL, dbName=config.POSTGRES_DB))

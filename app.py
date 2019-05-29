@@ -8,26 +8,19 @@ import os
 
 app = Flask(__name__, static_url_path='')
 
-db = records.Database('postgresql://{user}:{pw}@{url}/{dbName}'.format(user=config.POSTGRES_USER, pw=config.POSTGRES_PW, url=config.POSTGRES_URL, dbName=config.POSTGRES_DB))
+db = setupDB.connectDB()
 
-#needed to maintain login state
-#app.secret_key = config.SECRET_KEY
-
-#how do we plan on passing this from login?
-currUser = 12
 
 #----------------------------------------------------------------------
 #User page homescreen
 #----------------------------------------------------------------------
 @app.route('/', methods=['GET'])
 def main():
-    #query for the username for greeting
-    username = db.query('SELECT * FROM user_data WHERE id=:currUser', currUser=currUser)    
+    name = session['username']
 
-    #ensure that the name is a string
-    for i in username:
-        name = str(i.user_name)
- 
+    #query for the username for greeting
+    currUser = db.query('SELECT id FROM user_data WHERE user_name = :currUser', name=name)
+
     #query for the specific user's health, but only return the most recently
     #created row
     user_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
@@ -75,7 +68,11 @@ def main():
 #User's health page (view, add, and delete functions)
 #-------------------------------------------------------------------------
 @app.route('/health', methods=['GET', 'POST'])
-def health():
+def health():    
+    name = session['username']
+    
+    currUser = db.query('SELECT id FROM user_data WHERE user_name=:name', name=name)
+    
     #query for the user's most recently created health record
     user_health = db.query('SELECT * FROM health WHERE user_id=:currUser ORDER BY time_created DESC FETCH FIRST 1 ROW ONLY', currUser=currUser)
     
@@ -110,6 +107,10 @@ def health():
 #-------------------------------------------------------------------------
 @app.route('/activities', methods=['GET', 'POST'])
 def activities():
+    name = session['username']
+
+    currUser = db.query('SELECT id FROM user_data WHERE user_name=:name', name=name)
+
     #query for the user's 5 most recent activities, inner join goals to provide the
     #description of the goal associated with the activity logged
     user_activities = db.query('SELECT activities.id, activities.activity_type, activities.distance, activities.duration, goals.notes FROM activities INNER JOIN goals ON activities.goal_id=goals.id WHERE activities.user_id = :currUser ORDER BY activities.time_created DESC FETCH FIRST 5 ROWS ONLY', currUser=currUser)
@@ -143,7 +144,7 @@ def activities():
     return render_template('activities.html', user_activities=user_activities, user_goals=user_goals)
 
 #-------------------------------------------------------------------------
-#Route for deleting a row from the activities table
+#Deleting a row from the activities table
 #-------------------------------------------------------------------------
 @app.route('/deleteActivity/<aid>', methods=['POST', 'DELETE'])
 def delete_activity(aid):
@@ -157,6 +158,10 @@ def delete_activity(aid):
 #-------------------------------------------------------------------------
 @app.route('/goals', methods=['GET', 'POST'])
 def goals():
+    name = sessions['username']
+
+    currUser = db.query('SELECT id FROM user_data WHERE user_name=:name', name=name)
+
     #query for the 5 most recently created goals
     user_goals = db.query('SELECT * FROM goals WHERE user_id = :currUser ORDER BY time_created DESC FETCH FIRST 5 ROW ONLY', currUser=currUser)
     
